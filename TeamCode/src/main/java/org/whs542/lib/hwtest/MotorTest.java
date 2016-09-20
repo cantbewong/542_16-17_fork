@@ -10,8 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class MotorTest extends OpMode {
 
-    Object jj = new Object();
-
     DcMotor motor1;
     double power = 0.0;
 
