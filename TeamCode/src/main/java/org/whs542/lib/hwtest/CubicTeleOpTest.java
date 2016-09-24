@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * Created by Moses Won
  */
 
-@TeleOp(name = "CubicTeleOpTest", group = "Tests")
+@TeleOp(name = "CubicTeleOpTest", group = "HwTest")
 
 
 public class CubicTeleOpTest extends OpMode{

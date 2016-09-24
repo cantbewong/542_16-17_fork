@@ -7,9 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 /**
  * Created by Amar on 9/19/2016.
  */
-@Autonomous(name = "MotorTest", group = "Tests")
-=======
 
+@Autonomous(name = "MotorTest", group = "HwTest")
 
 public class MotorTest extends OpMode {
 
