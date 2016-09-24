@@ -3,6 +3,7 @@ package org.whs542.lib.hwtest;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 /**
  * Created by Moses Won
@@ -26,6 +27,12 @@ public class CubicTeleOpTest extends OpMode{
         backRight = hardwareMap.dcMotor.get("backRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
 
+
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+
     }
 
     @Override
@@ -43,6 +50,7 @@ public class CubicTeleOpTest extends OpMode{
         frontLeft.setPower(leftScaledPower);
         backRight.setPower(rightScaledPower);
         backLeft.setPower(leftScaledPower);
+
 
         telemetry.addData("Right Power", rightScaledPower);
         telemetry.addData("Left Power", leftScaledPower);

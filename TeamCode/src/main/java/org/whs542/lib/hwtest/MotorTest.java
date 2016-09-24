@@ -1,11 +1,13 @@
 package org.whs542.lib.hwtest;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * Created by Amar on 9/19/2016.
  */
+@Autonomous(name = "MotorTest", group = "Tests")
 public class MotorTest extends OpMode {
 
     DcMotor motor1;
