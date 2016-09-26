@@ -47,4 +47,12 @@ public abstract class TestBot extends OpMode{
         frontLeft.setPower(power);
         backLeft.setPower(power);
     }
+
+    public void setRLPower(double leftPower, double rightPower){
+        frontLeft.setPower(leftPower);
+        backLeft.setPower(leftPower);
+        frontRight.setPower(rightPower);
+        backRight.setPower(rightPower);
+    }
+    
 }
