@@ -59,6 +59,7 @@ public class CubicTeleOp extends OpMode {
         telemetry.addData("Right Power", rightScaledPower);
         telemetry.addData("Left Power", leftScaledPower);
         telemetry.addData("Flywheel", flywheel.getStatus());
+        telemetry.update();
 
 
     }

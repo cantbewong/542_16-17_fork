@@ -16,8 +16,8 @@ public class Flywheel {
 
    //HardwareMap: basically tells the program where each device is located on the robot. The name in argument(e.g. "rightFly") should correspond exactly to the name on the phone.
     Flywheel(HardwareMap aMap){
-        aMap.dcMotor.get("rightFly");
-        aMap.dcMotor.get("leftFly");
+        rightFly = aMap.dcMotor.get("rightFly");
+        leftFly = aMap.dcMotor.get("leftFly");
         status = false;
     }
 
