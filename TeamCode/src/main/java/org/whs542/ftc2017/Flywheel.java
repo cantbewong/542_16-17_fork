@@ -26,8 +26,8 @@ public class Flywheel {
         flyToggler.changeState(b1);
         if(flyToggler.currentState() == 1){
             status = true;
-            rightFly.setPower(1);
-            leftFly.setPower(-1);
+            rightFly.setPower(-1);
+            leftFly.setPower(1);
                     }
         else{
             status = false;
