@@ -54,5 +54,16 @@ public abstract class TestBot extends OpMode{
         frontRight.setPower(rightPower);
         backRight.setPower(rightPower);
     }
-    
+
+    //A set power method using the cubic function that Moses made
+    //params left and right can just be joystick values
+    public void setRLScaledPower(double leftPower, double rightPower){
+
+        double rightScaledPower = -Math.pow(rightPower, 3);
+        double leftScaledPower = -Math.pow(leftPower, 3);
+
+        setRightPower(rightScaledPower);
+        setLeftPower(leftScaledPower);
+
+    }
 }

@@ -3,6 +3,8 @@ package org.whs542.ftc2017;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.whs542.lib.Toggler;
+
 /**
  * Created by Jiangda on 10/1/2016.
  */
