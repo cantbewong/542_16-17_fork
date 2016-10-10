@@ -35,7 +35,6 @@ package org.whs542.lib.hwtest;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -50,16 +49,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import java.util.Locale;
 
 /**
- * {@link SensorAdafruitIMU} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link IMUTest} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Sensor: Adafruit IMU", group = "Sensor")
+@Autonomous(name = "IMUTest", group = "Sensor")
 //@Disabled
-public class SensorAdafruitIMU extends LinearOpMode
+public class IMUTest extends LinearOpMode
     {
     //----------------------------------------------------------------------------------------------
     // State
