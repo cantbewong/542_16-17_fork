@@ -166,9 +166,23 @@ public class VuforiaTest extends LinearOpMode {
         VuforiaTrackable blueTarget  = stonesAndChips.get(1);
         blueTarget.setName("BlueTarget");  // Chips
 
+        VuforiaTrackables ftcTargets = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
+        VuforiaTrackable wheels = ftcTargets.get(0);
+        wheels.setName("Wheels");
+
+        VuforiaTrackable gears = ftcTargets.get(1);
+        gears.setName("Gears");
+
+        VuforiaTrackable tools = ftcTargets.get(2);
+        tools.setName("Tools");
+
+        VuforiaTrackable legos = ftcTargets.get(3);
+        legos.setName("Legos");
+
         /** For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(stonesAndChips);
+        allTrackables.addAll(ftcTargets);
 
         /**
          * We use units of mm here because that's the recommended units of measurement for the
@@ -246,7 +260,9 @@ public class VuforiaTest extends LinearOpMode {
                         AxesReference.EXTRINSIC, AxesOrder.XZX,
                         AngleUnit.DEGREES, 90, 90, 0));
         redTarget.setLocation(redTargetLocationOnField);
-        RobotLog.ii(TAG, "Red Target=%s", format(redTargetLocationOnField));
+        RobotLog.ii(TAG, "Red Target=%s", format(redTargetLocationOnField));4
+
+        OpenGLMatrix wheelsTargetLocationOnField
 
        /*
         * To place the Stones Target on the Blue Audience wall:
