@@ -254,7 +254,7 @@ public class VuforiaTest extends LinearOpMode {
         OpenGLMatrix redTargetLocationOnField = OpenGLMatrix
                 /* Then we translate the target off to the RED WALL. Our translation here
                 is a negative translation in X.*/
-                .translation(-mmFTCFieldWidth/2, 0, 0)
+                .translation(-mmFTCFieldWidth / 2, 0, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         /* First, in the fixed (field) coordinate system, we rotate 90deg in X, then 90 in Z */
                         AxesReference.EXTRINSIC, AxesOrder.XZX,
@@ -263,11 +263,7 @@ public class VuforiaTest extends LinearOpMode {
         RobotLog.ii(TAG, "Red Target=%s", format(redTargetLocationOnField));
 
         //Translates wheel target to its location on the Velocity Vortex field
-        OpenGLMatrix wheelsTargetLocationOnField = OpenGLMatrix
-                .translation(0, mmFTCFieldWidth/2, 146.05F)
-                .multiplied(Orientation.getRotationMatrix(
-                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
-                        AngleUnit.DEGREES,90, 0, 0));
+
 
        /*
         * To place the Stones Target on the Blue Audience wall:
@@ -277,13 +273,53 @@ public class VuforiaTest extends LinearOpMode {
         OpenGLMatrix blueTargetLocationOnField = OpenGLMatrix
                 /* Then we translate the target off to the Blue Audience wall.
                 Our translation here is a positive translation in Y.*/
-                .translation(0, mmFTCFieldWidth/2, 0)
+                .translation(0, mmFTCFieldWidth / 2, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         /* First, in the fixed (field) coordinate system, we rotate 90deg in X */
                         AxesReference.EXTRINSIC, AxesOrder.XZX,
                         AngleUnit.DEGREES, 90, 0, 0));
         blueTarget.setLocation(blueTargetLocationOnField);
         RobotLog.ii(TAG, "Blue Target=%s", format(blueTargetLocationOnField));
+
+
+        /**
+         * The following are transformation matrices for the Gears, Tools, Legos, and Wheels targets used in Velocity Vortex.
+         * The targets are rotated to correspond to their actual locations on the playing field.
+         * For a picture of the actual locations, consult pg. 12 of the Field Setup Guide:
+         * https://firstinspiresst01.blob.core.windows.net/ftc/2017-field-setup-guide1.1.pdf
+         */
+
+        OpenGLMatrix wheelsTargetLocationOnField = OpenGLMatrix
+                .translation(330.2F, mmFTCFieldWidth/2, 146.05F)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
+                        AngleUnit.DEGREES,90, 0, 0));
+        wheels.setLocation(wheelsTargetLocationOnField);
+        RobotLog.ii(TAG, "Wheels Target=%s", format(wheelsTargetLocationOnField));
+
+        OpenGLMatrix gearsTargetLocationOnField = OpenGLMatrix
+                .translation(-mmFTCFieldWidth/2, -330.2F, 146.05F)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
+                        AngleUnit.DEGREES,90, 0, 90 ));
+        gears.setLocation(gearsTargetLocationOnField);
+        RobotLog.ii(TAG, "Gears Target=%s", format(gearsTargetLocationOnField));
+
+        OpenGLMatrix toolsTargetLocationOnField = OpenGLMatrix
+                .translation(-mmFTCFieldWidth, 889, 146.05F)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
+                        AngleUnit.DEGREES, 90, 0, 90));
+        tools.setLocation(toolsTargetLocationOnField);
+        RobotLog.ii(TAG, "Tools Target=%s", format(toolsTargetLocationOnField));
+
+        OpenGLMatrix legosTargetLocationOnField = OpenGLMatrix
+                .translation(-889, mmFTCFieldWidth, 146.05F)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
+                        AngleUnit.DEGREES, 90, 0, 0));
+        legos.setLocation(legosTargetLocationOnField);
+        RobotLog.ii(TAG, "Legos Target=%s", format(legosTargetLocationOnField));
 
         /**
          * Create a transformation matrix describing where the phone is on the robot. Here, we
@@ -312,6 +348,9 @@ public class VuforiaTest extends LinearOpMode {
         ((VuforiaTrackableDefaultListener)redTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         ((VuforiaTrackableDefaultListener)blueTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         ((VuforiaTrackableDefaultListener)wheels.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)gears.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)tools.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)legos.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
 
         /**
          * A brief tutorial: here's how all the math is going to work:
