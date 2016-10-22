@@ -1,6 +1,8 @@
 package org.whs542.lib.hwtest;
 
-public class TestBotDemo extends TestBot{
+import org.whs542.lib.TestBot;
+
+public class TestBotDemo extends TestBot {
 
     @Override
     public void init() {

@@ -1,4 +1,4 @@
-package org.whs542.lib.hwtest;
+package org.whs542.lib.swtest;
 
 /**
  * Created by Jiangda on 9/28/2016.
