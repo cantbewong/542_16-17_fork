@@ -71,7 +71,7 @@ public class ConceptCompassCalibration extends LinearOpMode {
     static final double     CAL_TIME_SEC  = 20;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException{
 
         /* Initialize the drive system variables.
          * The init() method of the hardware class does all the work here

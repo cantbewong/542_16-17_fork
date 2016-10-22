@@ -21,6 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import org.whs542.lib.Coordinate;
+
 import java.util.ArrayList;
 import java.util.List;
 public class Vuforia {
@@ -98,40 +100,45 @@ public class Vuforia {
     }
 
     /**
-     * Returns a float array containing the positional information of the robot in relation to the field. A float[] of 0, 0, 0
+     * Returns a Coordinate class containing the positional information of the robot in relation to the field. Coordinate x, y and z values of 0, 0, 0
      * corresponds to the center of the field. See FTCFieldCoordinateSystemDefinition in FTC 16-17 repo doc/tutorial folder for more info.
-     * If Vuforia cannot determine the location of the robot, this method returns a float array of 10000, 10000, 10000.
-     * The first, second, and third values in the xyzCoords [] correspond to x, y, and z coordinates, repspectively.
+     * If Vuforia cannot determine the heading and of the robot, the x, y and z values of Coordinate are all 10000.
+     * The first, second, and third values in the xyzCoords [] correspond to x, y, and z coordinates, respectively.
      */
-    public float[] getLocation(){
+    public Coordinate getHeadingAndLocation(){
 
         float[] xyzCoords = {10000, 10000, 10000};
+        double heading = 10000;
+        Orientation robotOrientation = new Orientation();
 
         for(VuforiaTrackable trackable : allTrackables){
             OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
             if(robotLocationTransform != null) {
                 xyzCoords = robotLocationTransform.getTranslation().getData();
 
-            }
-        }
-
-        return xyzCoords;
-    }
-    /**
-     * Returns the heading of the robot, in degrees. 
-     */
-    public float getHeading(){
-        float heading = 10000;
-        Orientation robotOrientation = new Orientation();
-        for(VuforiaTrackable trackable : allTrackables){
-            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-            if(robotLocationTransform != null) {
                 robotOrientation = Orientation.getOrientation(robotLocationTransform, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, Orientation.AngleSet.THEONE );
                 heading = robotOrientation.thirdAngle;
             }
         }
+
+        return new Coordinate(xyzCoords[1], xyzCoords[2], xyzCoords[3], heading);
+    }
+    /**
+     * Returns the heading of the robot, in degrees. 
+
+
+    public float getHeading(){
+        float heading = 10000;
+
+        for(VuforiaTrackable trackable : allTrackables){
+            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+            if(robotLocationTransform != null) {
+
+            }
+        }
         return heading;
     }
+     */
 
     String format(OpenGLMatrix transformationMatrix) {
         return transformationMatrix.formatAsTransform();
