@@ -35,7 +35,9 @@ public class Vuforia {
     float mmBotWidth       = 18 * mmPerInch;            // ... or whatever is right for your robot
     float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
-
+    /**
+     * Initializes Vuforia, using the phone's front camera and with the four vision targets used in Velocity Vortex.
+     */
     public Vuforia(){
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
@@ -95,28 +97,37 @@ public class Vuforia {
 
     }
 
-    public double[] getLocation(){
+    /**
+     * Returns a float array containing the positional information of the robot in relation to the field. A float[] of 0, 0, 0
+     * corresponds to the center of the field. See FTCFieldCoordinateSystemDefinition in FTC 16-17 repo doc/tutorial folder for more info.
+     * If Vuforia cannot determine the location of the robot, this method returns a float array of 10000, 10000, 10000.
+     * The first, second, and third values in the xyzCoords [] correspond to x, y, and z coordinates, repspectively.
+     */
+    public float[] getLocation(){
 
-        double[] xyzCoords = new double[3];
+        float[] xyzCoords = {10000, 10000, 10000};
 
         for(VuforiaTrackable trackable : allTrackables){
             OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
             if(robotLocationTransform != null) {
-                xyzCoords[0] = robotLocationTransform.get(0, 3);
-                xyzCoords[1] = robotLocationTransform.get(1, 3);
-                xyzCoords[2] = robotLocationTransform.get(2, 3);
+                xyzCoords = robotLocationTransform.getTranslation().getData();
+
             }
         }
 
         return xyzCoords;
     }
-
-    public double getHeading(){
-        double heading = 0;
+    /**
+     * Returns the heading of the robot, in degrees. 
+     */
+    public float getHeading(){
+        float heading = 10000;
+        Orientation robotOrientation = new Orientation();
         for(VuforiaTrackable trackable : allTrackables){
             OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
             if(robotLocationTransform != null) {
-                String location = format(robotLocationTransform);
+                robotOrientation = Orientation.getOrientation(robotLocationTransform, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, Orientation.AngleSet.THEONE );
+                heading = robotOrientation.thirdAngle;
             }
         }
         return heading;
