@@ -54,6 +54,14 @@ public class Drivetrain {
         setLeftPower(leftScaledPower);
 
     }
+    //Moves a certain distance forwards or backwards using encoders. Negative = backwards.
+    public void moveDistanceMilli(double distance){
+        
+    }
+    //Turns the robot with the center as the center of rotation. Positive = turn clockwise; negative = turn counterclockwise.
+    public void turn(double degrees){
+
+    }
 
 
 
