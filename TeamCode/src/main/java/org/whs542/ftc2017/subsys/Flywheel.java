@@ -1,4 +1,4 @@
-package org.whs542.ftc2017;
+package org.whs542.ftc2017.subsys;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
