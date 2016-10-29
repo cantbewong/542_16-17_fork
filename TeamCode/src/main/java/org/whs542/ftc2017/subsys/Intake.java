@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Intake {
 
     DcMotor intakeMotor;
-    double defaultPower;
+    double defaultPower = 1.0;
 
     public Intake(HardwareMap intakeMap){
-        intakeMap.dcMotor.get("intake");
+        intakeMotor = intakeMap.dcMotor.get("intake");
     }
 
 
@@ -20,7 +20,7 @@ public class Intake {
         if(bumper){
             intakeMotor.setPower(defaultPower);
         }
-        else if(trigger<0.05){
+        else if(trigger>0.05){
             intakeMotor.setPower(-defaultPower);
         }
         else {
@@ -28,11 +28,15 @@ public class Intake {
         }
     }
 
+    public void runIntake(){
+        intakeMotor.setPower(defaultPower);
+    }
+
     public void runIntake(boolean bumper, float trigger, double power){
         if(bumper){
             intakeMotor.setPower(power);
         }
-        else if(trigger<0.05){
+        else if(trigger>0.05){
             intakeMotor.setPower(-power);
         }
         else {
