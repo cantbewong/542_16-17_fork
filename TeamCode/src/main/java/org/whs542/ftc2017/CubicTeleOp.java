@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.whs542.ftc2017.subsys.Flywheel;
+
 /**
  * Created by Jiangda on 10/1/2016.
  */

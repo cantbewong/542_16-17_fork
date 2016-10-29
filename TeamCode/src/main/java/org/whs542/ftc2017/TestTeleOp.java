@@ -20,7 +20,7 @@ public class TestTeleOp extends OpMode{
     public void loop() {
 
         telemetry.addData("LeftStick Y", gamepad1.left_stick_y);
-        telemetry.addData("LeftStck X", gamepad1.right_stick_y);
+        telemetry.addData("LeftStick X", gamepad1.right_stick_y);
 
         telemetry.addData("Trigger", gamepad1.left_trigger);
 

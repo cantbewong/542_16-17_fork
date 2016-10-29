@@ -2,6 +2,8 @@ package org.whs542.ftc2017.subsys;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.whs542.lib.Coordinate;
 import org.whs542.lib.Toggler;
 
 /**
@@ -12,6 +14,8 @@ public class Flywheel {
     private DcMotor rightFly;
     private DcMotor leftFly;
     private boolean status;
+    private Coordinate currentPosition;
+    private Coordinate Vortex=new Coordinate(304.8,304.8,304.8,1);
     double power = 1;                   //Defualt power level. Can be changed via the alternate contructor, or using the method setPower
 
     private Toggler flyToggler = new Toggler(2);
@@ -53,4 +57,15 @@ public class Flywheel {
         this.power = power;
     }
 
+    public double velocity(){
+        //current position = use vuforia, take picture
+        //calculate distance, match velocity with power
+        return power;
+    }
+
+    public void shoot(boolean b1){
+        //target position face vortex
+        setPower(velocity());
+        run(b1);
+    }
 }
