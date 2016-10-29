@@ -4,6 +4,7 @@ package org.whs542.lib;
  * Created by Jiangda on 10/16/2016.
  */
 
+import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -44,7 +45,7 @@ public class Vuforia {
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AcHvLjn/////AAAAGXiaYd8sQUWoodQdUe6EkVh5In4npcgPENX3TMz43hlk9g7Xe4JzvNU8g9W4esItJjBtwkoCJVn1vT28VzK1SEd96YjzpbBgL3zubmG9pCqnxMawGUdiIP19mwl4cWACtqAPH5lV2cccLUmFou4RsBDdhwajo1imLuLphy4auD0IwyV+Pcp7+gAg0LCnZ2A3UX9nsPjGWKEs8REy0pCw37Nl1K3t670ivSSxkfo/iF71IxhUkE+W+GaJZ/JFw1WL6m8i0qgrWWSJg3zfwx9jSRZRAXYdM9crg+edoin2Wmkaw69PTiD7pJDiWfjjb+1z1rewEZGxf1i8WTLWskvO76xZ0coIFlbVSwl8YMNaiPrh";
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         VuforiaTrackables ftcTargets = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
@@ -60,7 +61,8 @@ public class Vuforia {
         VuforiaTrackable legos = ftcTargets.get(3);
         legos.setName("Legos");
 
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        // List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(ftcTargets);
 
         OpenGLMatrix wheelsTargetLocationOnField = OpenGLMatrix
@@ -94,7 +96,6 @@ public class Vuforia {
                         AngleUnit.DEGREES, 90, 0, 0));
         legos.setLocation(legosTargetLocationOnField);
         RobotLog.ii(TAG, "Legos Target=%s", format(legosTargetLocationOnField));
-
         ftcTargets.activate();
 
     }
@@ -108,8 +109,11 @@ public class Vuforia {
     public Coordinate getHeadingAndLocation(){
 
         float[] xyzCoords = {10000, 10000, 10000};
+
         double heading = 10000;
-        Orientation robotOrientation = new Orientation();
+        Orientation robotOrientation;
+
+        DbgLog.msg(allTrackables.toString());
 
         for(VuforiaTrackable trackable : allTrackables){
             OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
@@ -121,8 +125,9 @@ public class Vuforia {
             }
         }
 
-        return new Coordinate(xyzCoords[1], xyzCoords[2], xyzCoords[3], heading);
+        return new Coordinate(xyzCoords[0], xyzCoords[1], xyzCoords[2], heading);
     }
+
     /**
      * Returns the heading of the robot, in degrees. 
 

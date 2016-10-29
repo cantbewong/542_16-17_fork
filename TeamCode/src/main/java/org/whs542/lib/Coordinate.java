@@ -16,7 +16,7 @@ public class Coordinate {
         orientation = orientationInput;
     }
 
-    public Coordinate returnCoordValue(){
+    public Coordinate returnCoord(){
         return this;
     }
 
