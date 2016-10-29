@@ -21,15 +21,16 @@ public class Flywheel {
     private Toggler flyToggler = new Toggler(2);
 
    //HardwareMap: basically tells the program where each device is located on the robot. The name in argument(e.g. "rightFly") should correspond exactly to the name on the phone.
-    public Flywheel(HardwareMap aMap){
-        rightFly = aMap.dcMotor.get("rightFly");
-        leftFly = aMap.dcMotor.get("leftFly");
+    public Flywheel(HardwareMap map){
+        rightFly = map.dcMotor.get("rightFly");
+        leftFly = map.dcMotor.get("leftFly");
         status = false;
     }
-    public Flywheel(HardwareMap aMap, double powerIn){
-        rightFly = aMap.dcMotor.get("rightFly");
-        leftFly = aMap.dcMotor.get("leftFly");
+    public Flywheel(HardwareMap map, double powerIn){
+        rightFly = map.dcMotor.get("rightFly");
+        leftFly = map.dcMotor.get("leftFly");
         status = false;
+        power = powerIn;
     }
 
     //The core of the flywheel program. Spins flywheels if right bumper is pressed, stops spinning if pressed again.
@@ -46,6 +47,7 @@ public class Flywheel {
             leftFly.setPower(0);
         }
     }
+
     public String getStatus(){
         if(status)
             return "spinning";
