@@ -1,6 +1,7 @@
 package org.whs542.ftc2017.subsys;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -14,13 +15,17 @@ public class Flywheel {
 
     private DcMotor rightFly;
     private DcMotor leftFly;
+
     private Servo flywheelGate;
-    private Servo particleRelease;
+    //private Servo particleRelease;
+
     private boolean status;
     private boolean gateStatus;
+    private static double MAX_SPEED = 4000; //ticks per sec
+
     private Coordinate currentPosition;
     private Coordinate Vortex=new Coordinate(304.8,304.8,304.8,1);
-    private static double MAX_SPEED = 4000; //ticks per sec
+
     double power = 1;                   //Defualt power level. Can be changed via the alternate contructor, or using the method setPower
 
     private Toggler flyToggler = new Toggler(2);
@@ -34,7 +39,7 @@ public class Flywheel {
         status = false;
         rightFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-	particleRelease = aMap.servo.get("particleRelease");
+	    //particleRelease = aMap.servo.get("particleRelease");
     }
   
 
@@ -44,8 +49,8 @@ public class Flywheel {
         flyToggler.changeState(b1);
         if(flyToggler.currentState() == 1){
             status = true;
-            rightFly.setPower(-power);
-            leftFly.setPower(power);
+            rightFly.setPower(power);
+            leftFly.setPower(-power);
         }
         else{
             status = false;
@@ -58,8 +63,8 @@ public class Flywheel {
         flyToggler.changeState(b1);
         if(flyToggler.currentState() == 1){
             status = true;
-            rightFly.setPower(-powerIn);
-            leftFly.setPower(powerIn);
+            rightFly.setPower(powerIn);
+            leftFly.setPower(-powerIn);
         }
         else{
             status = false;
@@ -90,19 +95,21 @@ public class Flywheel {
 
     public String getGateStatus(){
         if(gateStatus)
-            return "open";
+            return "notdefault";
         else
-            return "close";
+            return "default";
     }
 
     public void setPower(double power){
         this.power = power;
     }
 
+    /*
     public void releaseParticle(boolean b2){
         particleRelease.setPosition(120);
         particleRelease.setPosition(0);
     }
+    */
 
     public double findPower(){
         //current position = use vuforia, take picture
@@ -114,6 +121,8 @@ public class Flywheel {
         //https://ftc-tricks.com/dc-motors/
     }
 
+
+    /*
     public void shoot(boolean b1, boolean b2, double joystick){
 
         if (b1){
@@ -136,6 +145,7 @@ public class Flywheel {
         }
 
     }
+    */
 
 
 }
