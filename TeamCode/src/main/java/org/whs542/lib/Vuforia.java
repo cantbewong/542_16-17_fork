@@ -129,9 +129,12 @@ public class Vuforia {
         double heading = 10000;
         Orientation robotOrientation;
 
-
         for(VuforiaTrackable trackable : allTrackables){
-            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+
+            OpenGLMatrix robotLocationTransform = null;
+            while( robotLocationTransform == null ){
+                robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+            }
             if(robotLocationTransform != null) {
                 xyzCoords = robotLocationTransform.getTranslation().getData();
 
@@ -139,7 +142,6 @@ public class Vuforia {
                 heading = robotOrientation.thirdAngle;
                 DbgLog.msg("%f, %f, %f, %f", xyzCoords[0], xyzCoords[1], xyzCoords[2], heading);
             }
-            else{}
         }
 
         return new Coordinate(xyzCoords[0], xyzCoords[1], xyzCoords[2], vuforiaAngleConverter(heading));

@@ -15,7 +15,7 @@ public class TestAutoOp extends OpMode{
 
     @Override
     public void loop() {
-        
+
 
     }
 }
