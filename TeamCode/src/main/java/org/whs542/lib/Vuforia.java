@@ -142,9 +142,18 @@ public class Vuforia {
             else{}
         }
 
-        return new Coordinate(xyzCoords[0], xyzCoords[1], xyzCoords[2], heading);
+        return new Coordinate(xyzCoords[0], xyzCoords[1], xyzCoords[2], vuforiaAngleConverter(heading));
     }
 
+    //Converts vuforia angle to absolute angle value. Vuforia gives values from -180 t0 180; this method
+    //Converts it to 0 to 360. 0 = +x
+    public static double vuforiaAngleConverter( double degrees ){
+
+        if(degrees < 0 && degrees >= -180){
+            degrees = degrees + 360;
+        }
+        return degrees;
+    }
     /**
      * Returns the heading of the robot, in degrees. 
 
