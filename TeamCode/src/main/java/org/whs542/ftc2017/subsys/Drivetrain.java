@@ -66,7 +66,7 @@ public class Drivetrain {
     }
     //Moves a certain distance forwards or backwards using encoders. Includes IMU as check. Negative = backwards.
     public void moveDistanceMilli(double distance){
-
+        //// TODO: 10/30/2016 Finish moveDistanceMilli method
     }
 
 
