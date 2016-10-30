@@ -15,10 +15,12 @@ public class Flywheel {
     private DcMotor rightFly;
     private DcMotor leftFly;
     private Servo flywheelGate;
+    private Servo particleRelease;
     private boolean status;
     private boolean gateStatus;
     private Coordinate currentPosition;
     private Coordinate Vortex=new Coordinate(304.8,304.8,304.8,1);
+    private static double MAX_SPEED = 4000; //ticks per sec
     double power = 1;                   //Defualt power level. Can be changed via the alternate contructor, or using the method setPower
 
     private Toggler flyToggler = new Toggler(2);
@@ -30,7 +32,11 @@ public class Flywheel {
         leftFly = aMap.dcMotor.get("leftFly");
         flywheelGate = aMap.servo.get("flywheelGate");
         status = false;
+        rightFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+	particleRelease = aMap.servo.get("particleRelease");
     }
+  
 
 
     //The core of the flywheel program. Spins flywheels if right bumper is pressed, stops spinning if pressed again.
@@ -93,15 +99,46 @@ public class Flywheel {
         this.power = power;
     }
 
-    public double velocity(){
-        //current position = use vuforia, take picture
-        //calculate distance, match velocity with power
-        return power;
+    public void releaseParticle(boolean b2){
+        particleRelease.setPosition(120);
+        particleRelease.setPosition(0);
     }
 
-    public void shoot(boolean b1){
-        //target position face vortex
-        setPower(velocity());
-        run(b1);
+    public double findPower(){
+        //current position = use vuforia, take picture
+        //calculate distance
+        rightFly.setMaxSpeed((int) MAX_SPEED);
+        double velocity = 1; //distance/ constant if it's linear, ticks per second
+        power = velocity/MAX_SPEED;
+        return power;
+        //https://ftc-tricks.com/dc-motors/
     }
+    public void setPower(double power){
+        this.power = power;
+    }
+
+    public void shoot(boolean b1, boolean b2, double joystick){
+
+        if (b1){
+            //thread.sleep
+            //target position face vortex
+            setPower(findPower());
+            run(b1);
+            boolean loop = true;
+            while (loop) {
+                if (rightFly.getPower() == power && b2) {
+                    releaseParticle(b2);
+                }
+                else if (b1){
+                    loop = false;
+                }
+                else if (joystick != 0 ){
+                    loop = false;
+                }
+            }
+        }
+
+    }
+
+
 }
