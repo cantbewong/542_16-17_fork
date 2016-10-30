@@ -113,9 +113,6 @@ public class Flywheel {
         return power;
         //https://ftc-tricks.com/dc-motors/
     }
-    public void setPower(double power){
-        this.power = power;
-    }
 
     public void shoot(boolean b1, boolean b2, double joystick){
 
