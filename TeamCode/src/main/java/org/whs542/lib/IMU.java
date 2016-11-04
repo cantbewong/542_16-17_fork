@@ -43,4 +43,18 @@ public class IMU {
         double heading = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.XYZ).thirdAngle;
         return heading;
     }
+
+    //Returns the magnitude of the acceleration, not the direction.
+    public double getAccelerationMag(){
+        double xAccel = imu.getLinearAcceleration().xAccel;
+        double yAccel = imu.getLinearAcceleration().yAccel;
+        double zAccel = imu.getLinearAcceleration().zAccel;
+
+        double accelMag =
+        Math.sqrt(
+            Math.pow( xAccel, 2 ) + Math.pow( yAccel, 2 ) + Math.pow( zAccel, 2 )
+        );
+        return accelMag;
+    }
 }
+

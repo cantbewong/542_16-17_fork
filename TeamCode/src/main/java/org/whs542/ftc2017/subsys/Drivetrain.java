@@ -19,8 +19,7 @@ public class Drivetrain {
     DcMotor frontRight;
     DcMotor backLeft;
     DcMotor backRight;
-    IMU imu;
-    Vuforia vuforia;
+
     //All measurements in millimeters because that is the unit Vuforia uses
     private final double RADIUS_OF_WHEEL = 100;//TODO: UPDATE
     private final double CIRC_OF_WHEEL = RADIUS_OF_WHEEL * 2 * Math.PI;
@@ -38,21 +37,24 @@ public class Drivetrain {
 
         frontRight.setZeroPowerBehavior( ZeroPowerBehavior.BRAKE );
         frontLeft.setZeroPowerBehavior( ZeroPowerBehavior.BRAKE );
-        backRight.setZeroPowerBehavior( ZeroPowerBehavior.BRAKE );
-        backLeft.setZeroPowerBehavior( ZeroPowerBehavior.BRAKE );
-
-        imu = driveMap.get(IMU.class, "imu");
-        vuforia = new Vuforia();
+        backRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
     public void setRunMode( RunMode theMode ){
-        frontLeft.setMode( theMode );
-        frontRight.setMode( theMode );
+        frontLeft.setMode(theMode);
+        frontRight.setMode(theMode);
         backLeft.setMode(theMode);
         backRight.setMode(theMode);
+    }
+    public void setMaxSpeed(int maxSpeed){
+        frontLeft.setMaxSpeed( maxSpeed );
+        frontRight.setMaxSpeed( maxSpeed );
+        backLeft.setMaxSpeed(maxSpeed);
+        backRight.setMaxSpeed(maxSpeed);
     }
 
     public void setRightPower(double power){
@@ -93,7 +95,7 @@ public class Drivetrain {
 
     //Input: destination coordinate object(values are in millimeters)
     //Output: robot automatically moves to that point on the field.
-    public void move( Coordinate destination ){
+    public void move( Coordinate destination, Vuforia vuforia, IMU imu){
         Coordinate current = vuforia.getHeadingAndLocation();
 
         double distanceSquared =
@@ -128,23 +130,36 @@ public class Drivetrain {
             initialOrientation = 360 + initialOrientation;
         }
         //Turn robot to the desired orientation
-        this.turn(initialOrientation, current.returnCoordSingleValue("heading"));
+        this.turn(initialOrientation, current.returnCoordSingleValue("heading"), imu);
 
         //Move robot forward the calculated distance, using IMU as check
-        this.moveDistanceMilli(distance);
+        this.moveDistanceMilli(distance, imu);
 
         //Orient robot to destination orientation
-        this.turn(destination.returnCoordSingleValue("heading"), initialOrientation);
+        this.turn(destination.returnCoordSingleValue("heading"), initialOrientation, imu);
 
     }
 
     //Moves a certain distance forwards or backwards using encoders. Includes IMU as check. Negative = backwards.
-    public void moveDistanceMilli(double distanceMM){
+    public void moveDistanceMilli(double distanceMM, IMU imu){
         int encoderPosition = (int) (distanceMM * ENCODER_TICKS_PER_MM);
 
         this.setRunMode( RunMode.STOP_AND_RESET_ENCODER );
-        this.setRunMode( RunMode.RUN_TO_POSITION );
-        this.setTargetPosition( encoderPosition );
+        this.setRunMode(RunMode.RUN_TO_POSITION);
+        this.setMaxSpeed(4000);
+        this.setTargetPosition(encoderPosition);
+        while( Math.abs( 0.5 * ( frontRight.getCurrentPosition() + backLeft.getCurrentPosition() ) )
+            < Math.abs( encoderPosition )) {
+
+            this.setRLPower(0.5, 0.5);
+            //If the acceleration measured by the accelerometer exceeds a certain threshold, indicating
+            //that the robot slammed into something, stop the robot.
+            if( imu.getAccelerationMag() > 10.0 ){
+                this.setRLPower(0, 0);
+                System.exit(0);
+            }
+        }
+
 
         //// TODO: 10/30/2016 Finish moveDistanceMilli method
 
@@ -152,7 +167,7 @@ public class Drivetrain {
 
     //Tells the robot how much left (positive value) or right (negative) to turn based on the initial heading, from 0
     //to 359.9, and the final heading, also from 0 to 360. Accounts for the jump from 359.9 to 0.
-    public void turn( double destinationDegrees, double currentDegrees){
+    public void turn( double destinationDegrees, double currentDegrees, IMU imu){
         this.setRunMode( RunMode.RUN_WITHOUT_ENCODER );
         double difference = destinationDegrees - currentDegrees;
         if( Math.abs( difference ) > 180) {
