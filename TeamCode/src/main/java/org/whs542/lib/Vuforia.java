@@ -36,8 +36,10 @@ public class Vuforia {
 
     float mmPerInch        = 25.4f;
     float mmBotWidth       = 18 * mmPerInch;            // ... or whatever is right for your robot
-    float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
-
+    //float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
+    float tileWidthMM = 600;
+    float mmFTCFieldWidth = 6 * tileWidthMM;
+    float imageHtMM = 150;
     /**
      * Initializes Vuforia, using the phone's front camera and with the four vision targets used in Velocity Vortex.
      */
@@ -66,15 +68,23 @@ public class Vuforia {
         allTrackables.addAll(ftcTargets);
 
         OpenGLMatrix wheelsTargetLocationOnField = OpenGLMatrix
-                .translation(330.2F, mmFTCFieldWidth/2, 146.05F)
+                .translation(0.5f * tileWidthMM, mmFTCFieldWidth/2, imageHtMM)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ,
-                        AngleUnit.DEGREES,90, 0, 0));
+                        AngleUnit.DEGREES, 90, 0, 0));
         wheels.setLocation(wheelsTargetLocationOnField);
         RobotLog.ii(TAG, "Wheels Target=%s", format(wheelsTargetLocationOnField));
 
+        OpenGLMatrix legosTargetLocationOnField = OpenGLMatrix
+                .translation(-1.5f * tileWidthMM, mmFTCFieldWidth/2, imageHtMM)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
+                        AngleUnit.DEGREES, 90, 0, 0));
+        legos.setLocation(legosTargetLocationOnField);
+        RobotLog.ii(TAG, "Legos Target=%s", format(legosTargetLocationOnField));
+
         OpenGLMatrix gearsTargetLocationOnField = OpenGLMatrix
-                .translation(-mmFTCFieldWidth/2, -330.2F, 146.05F)
+                .translation(-mmFTCFieldWidth/2, -0.5f * tileWidthMM, imageHtMM)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ,
                         AngleUnit.DEGREES,90, 0, 90 ));
@@ -82,20 +92,26 @@ public class Vuforia {
         RobotLog.ii(TAG, "Gears Target=%s", format(gearsTargetLocationOnField));
 
         OpenGLMatrix toolsTargetLocationOnField = OpenGLMatrix
-                .translation(-mmFTCFieldWidth, 889, 146.05F)
+                .translation(-mmFTCFieldWidth/2, 1.5f * tileWidthMM, imageHtMM)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ,
                         AngleUnit.DEGREES, 90, 0, 90));
         tools.setLocation(toolsTargetLocationOnField);
         RobotLog.ii(TAG, "Tools Target=%s", format(toolsTargetLocationOnField));
 
-        OpenGLMatrix legosTargetLocationOnField = OpenGLMatrix
-                .translation(-889, mmFTCFieldWidth, 146.05F)
+
+
+        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
+                .translation(mmBotWidth/2,0,0)
                 .multiplied(Orientation.getRotationMatrix(
-                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
-                        AngleUnit.DEGREES, 90, 0, 0));
-        legos.setLocation(legosTargetLocationOnField);
-        RobotLog.ii(TAG, "Legos Target=%s", format(legosTargetLocationOnField));
+                        AxesReference.EXTRINSIC, AxesOrder.YZY,
+                        AngleUnit.DEGREES, -90, 0, 0));
+        RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
+
+        ((VuforiaTrackableDefaultListener)wheels.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)gears.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)tools.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)legos.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         ftcTargets.activate();
 
     }
@@ -113,21 +129,33 @@ public class Vuforia {
         double heading = 10000;
         Orientation robotOrientation;
 
-        DbgLog.msg(allTrackables.toString());
-
         for(VuforiaTrackable trackable : allTrackables){
-            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+
+            OpenGLMatrix robotLocationTransform = null;
+            while( robotLocationTransform == null ){
+                robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+            }
             if(robotLocationTransform != null) {
                 xyzCoords = robotLocationTransform.getTranslation().getData();
 
-                robotOrientation = Orientation.getOrientation(robotLocationTransform, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, Orientation.AngleSet.THEONE );
+                robotOrientation = Orientation.getOrientation(robotLocationTransform, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, Orientation.AngleSet.THEONE);
                 heading = robotOrientation.thirdAngle;
+                DbgLog.msg("%f, %f, %f, %f", xyzCoords[0], xyzCoords[1], xyzCoords[2], heading);
             }
         }
 
-        return new Coordinate(xyzCoords[0], xyzCoords[1], xyzCoords[2], heading);
+        return new Coordinate(xyzCoords[0], xyzCoords[1], xyzCoords[2], vuforiaAngleConverter(heading));
     }
 
+    //Converts vuforia angle to absolute angle value. Vuforia gives values from -180 t0 180; this method
+    //Converts it to 0 to 360. 0 = +x
+    public static double vuforiaAngleConverter( double degrees ){
+
+        if(degrees < 0 && degrees >= -180){
+            degrees = degrees + 360;
+        }
+        return degrees;
+    }
     /**
      * Returns the heading of the robot, in degrees. 
 
