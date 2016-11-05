@@ -9,14 +9,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous( name = "MoveTestAutoOp", group = "test" )
 public class MoveTestAutoOp extends WHSParentAutoOp{
 
+    int caseNumber;
     @Override
-    public void init(){
+    public void init()
+    {
         super.init();
+        caseNumber = 0;
     }
 
     @Override
     public void loop(){
-        whsRobot.drivetrain.moveDistanceMilli( 1000, imu );
+        while (caseNumber == 0) {
+            whsRobot.drivetrain.moveDistanceMilli(1000, imu);
+            caseNumber = 1;
+        }
     }
 
 }

@@ -21,7 +21,7 @@ public class Drivetrain {
     DcMotor backRight;
 
     //All measurements in millimeters because that is the unit Vuforia uses
-    private final double RADIUS_OF_WHEEL = 96;
+    private final double RADIUS_OF_WHEEL = 50;
     private final double CIRC_OF_WHEEL = RADIUS_OF_WHEEL * 2 * Math.PI;
     private final double ENCODER_TICKS_PER_MM = 1120 / CIRC_OF_WHEEL;
 
