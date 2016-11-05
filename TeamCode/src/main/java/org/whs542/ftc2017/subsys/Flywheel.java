@@ -88,6 +88,13 @@ public class Flywheel {
         }
     }
 
+    public void operateGate(float trigger)
+    {
+        boolean triggerPressed;
+        if(trigger no)
+
+    }
+
     public String getFlywheelStatus()
     {
         if(status)

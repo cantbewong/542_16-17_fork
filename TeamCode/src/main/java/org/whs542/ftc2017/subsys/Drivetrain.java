@@ -70,11 +70,14 @@ public class Drivetrain {
     }
 
     public void setRLPower(double leftPower, double rightPower){
-        frontLeft.setPower(leftPower);
-        backLeft.setPower(leftPower);
-        frontRight.setPower(rightPower);
-        backRight.setPower(rightPower);
+        frontLeft.setPower(-leftPower);
+        backLeft.setPower(-leftPower);
+        frontRight.setPower(-rightPower);
+        backRight.setPower(-rightPower);
+
     }
+
+    //add orientation switcher
 
     //A set power method using the cubic function that Moses made
     //params left and right can just be joystick values

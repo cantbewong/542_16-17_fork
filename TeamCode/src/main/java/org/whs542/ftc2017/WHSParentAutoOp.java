@@ -16,6 +16,7 @@ public abstract class WHSParentAutoOp extends OpMode {
 
     @Override
     public void init(){
+        vuforia = new Vuforia();
         imu = new IMU(hardwareMap);
         whsRobot = new WHSRobot(hardwareMap);
     }
