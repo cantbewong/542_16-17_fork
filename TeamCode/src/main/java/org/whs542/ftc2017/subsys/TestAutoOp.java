@@ -10,7 +10,7 @@ public class TestAutoOp extends OpMode{
 
     @Override
     public void init() {
-        robot = new WHSRobot(hardwareMap);
+        //+robot = new WHSRobot(hardwareMap);
     }
 
     @Override
