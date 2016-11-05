@@ -16,6 +16,8 @@ public class Flywheel {
     private DcMotor rightFly;
     private DcMotor leftFly;
     private Servo flywheelGate;
+    //private Servo particleRelease;
+
     private boolean status;
     private boolean gateStatus;
     private static double MAX_SPEED = 4000; //ticks per sec
@@ -32,9 +34,10 @@ public class Flywheel {
         rightFly = map.dcMotor.get("rightFly");
         leftFly = map.dcMotor.get("leftFly");
         flywheelGate = map.servo.get("flywheelGate");
+        status = false;
         rightFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        status = false;
+        //particleRelease = aMap.servo.get("particleRelease");
     }
 
     //The core of the flywheel program. Spins flywheels if right bumper is pressed, stops spinning if pressed again.
@@ -85,7 +88,8 @@ public class Flywheel {
         }
     }
 
-    public String getFlywheelStatus(){
+    public String getFlywheelStatus()
+    {
         if(status)
             return "Spinning";
         else
@@ -105,6 +109,10 @@ public class Flywheel {
         flywheelGate.setPosition(0);
     }
 
+    public void setPower(double power){
+        this.power = power;
+    }
+
     public double findPower(){
         //current position = use vuforia, take picture
         //calculate distance
@@ -113,10 +121,6 @@ public class Flywheel {
         power = velocity/MAX_SPEED;
         return power;
         //https://ftc-tricks.com/dc-motors/
-    }
-
-    public void setPower(double power){
-        this.power = power;
     }
 
     public void shoot(boolean b1, boolean b2, double joystick){

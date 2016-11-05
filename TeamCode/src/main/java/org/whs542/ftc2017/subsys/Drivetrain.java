@@ -36,12 +36,12 @@ public class Drivetrain {
         backLeft = driveMap.dcMotor.get("backLeft");
 
         frontRight.setZeroPowerBehavior( ZeroPowerBehavior.BRAKE );
-        frontLeft.setZeroPowerBehavior( ZeroPowerBehavior.BRAKE );
+        frontLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 

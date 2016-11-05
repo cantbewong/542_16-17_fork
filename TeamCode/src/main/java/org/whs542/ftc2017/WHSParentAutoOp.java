@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.whs542.ftc2017.subsys.WHSRobot;
 import org.whs542.lib.IMU;
 import org.whs542.lib.Vuforia;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 public abstract class WHSParentAutoOp extends OpMode {
     Vuforia vuforia;
@@ -17,8 +16,7 @@ public abstract class WHSParentAutoOp extends OpMode {
 
     @Override
     public void init(){
-        vuforia = new Vuforia();
-        imu = new IMU();
+        imu = new IMU(hardwareMap);
         whsRobot = new WHSRobot(hardwareMap);
     }
 

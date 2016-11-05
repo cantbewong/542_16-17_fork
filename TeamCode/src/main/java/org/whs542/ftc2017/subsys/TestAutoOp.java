@@ -9,7 +9,7 @@ public class TestAutoOp extends OpMode{
     WHSRobot robot;
 
     public void init() {
-        robot = new WHSRobot(hardwareMap);
+        //+robot = new WHSRobot(hardwareMap);
     }
 
     public void loop() {
