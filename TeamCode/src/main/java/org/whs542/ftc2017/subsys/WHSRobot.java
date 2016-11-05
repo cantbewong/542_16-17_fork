@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 /**
  * Created by Amar2 on 10/22/2016.
  */
-public class WHSRobot {
-
+public class WHSRobot
+{
     public Drivetrain drivetrain;
     public Intake intake;
     public Flywheel flywheel;

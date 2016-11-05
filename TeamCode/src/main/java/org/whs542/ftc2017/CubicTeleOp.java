@@ -3,7 +3,6 @@ package org.whs542.ftc2017;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.whs542.ftc2017.subsys.Flywheel;
 
@@ -62,7 +61,7 @@ public class CubicTeleOp extends OpMode {
 
         telemetry.addData("Right Power", rightScaledPower);
         telemetry.addData("Left Power", leftScaledPower);
-        telemetry.addData("Flywheel", flywheel.getStatus());
+        telemetry.addData("Flywheel", flywheel.getFlywheelStatus());
         telemetry.update();
 
 

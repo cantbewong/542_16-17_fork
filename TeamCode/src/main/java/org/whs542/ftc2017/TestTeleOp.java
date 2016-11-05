@@ -26,7 +26,7 @@ public class TestTeleOp extends OpMode{
 
         telemetry.addData("Trigger", gamepad1.left_trigger);
 
-        telemetry.addData("FWheelStat:", robot.flywheel.getStatus());
+        telemetry.addData("FWheelStat:", robot.flywheel.getFlywheelStatus());
         telemetry.addData("FGateStat:", robot.flywheel.getGateStatus());
 
         robot.drivetrain.setRLPower(gamepad1.left_stick_y, gamepad1.right_stick_y);

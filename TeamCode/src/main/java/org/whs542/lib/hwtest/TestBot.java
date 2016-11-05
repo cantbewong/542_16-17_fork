@@ -1,4 +1,4 @@
-package org.whs542.lib;
+package org.whs542.lib.hwtest;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;

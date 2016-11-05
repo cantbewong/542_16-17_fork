@@ -8,12 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.*;
 public class TestAutoOp extends OpMode{
     WHSRobot robot;
 
-    @Override
     public void init() {
         robot = new WHSRobot(hardwareMap);
     }
 
-    @Override
     public void loop() {
 
 

@@ -1,7 +1,5 @@
 package org.whs542.lib.hwtest;
 
-import org.whs542.lib.TestBot;
-
 public class TestBotDemo extends TestBot {
 
     @Override

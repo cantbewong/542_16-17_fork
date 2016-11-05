@@ -99,8 +99,6 @@ public class Vuforia {
         tools.setLocation(toolsTargetLocationOnField);
         RobotLog.ii(TAG, "Tools Target=%s", format(toolsTargetLocationOnField));
 
-
-
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
                 .translation(mmBotWidth/2,0,0)
                 .multiplied(Orientation.getRotationMatrix(
@@ -142,6 +140,7 @@ public class Vuforia {
                 heading = robotOrientation.thirdAngle;
                 DbgLog.msg("%f, %f, %f, %f", xyzCoords[0], xyzCoords[1], xyzCoords[2], heading);
             }
+            else {}
         }
 
         return new Coordinate(xyzCoords[0], xyzCoords[1], xyzCoords[2], vuforiaAngleConverter(heading));

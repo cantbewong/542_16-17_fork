@@ -44,12 +44,14 @@ public class Drivetrain {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
+
     public void setRunMode( RunMode theMode ){
         frontLeft.setMode(theMode);
         frontRight.setMode(theMode);
         backLeft.setMode(theMode);
         backRight.setMode(theMode);
     }
+
     public void setMaxSpeed(int maxSpeed){
         frontLeft.setMaxSpeed( maxSpeed );
         frontRight.setMaxSpeed( maxSpeed );
@@ -83,8 +85,8 @@ public class Drivetrain {
 
         setRightPower(rightScaledPower);
         setLeftPower(leftScaledPower);
-
     }
+
     //Runs all four motors to a certain encoder position; holds all motors actively thereat
     public void setTargetPosition( int position ){
         frontLeft.setTargetPosition( position );
@@ -108,10 +110,9 @@ public class Drivetrain {
          * is a 270 degree turn counterclockwise, we want degreesToTurn to be -90, which is a
          * 90 degree turn clockwise.
          */
-        /*double degreesToTurnFinal =
-        destination.returnCoordSingleValue("orientation") - current.returnCoordSingleValue("orientation");
+        /*double degreesToTurnFinal = destination.returnCoordSingleValue("orientation") - current.returnCoordSingleValue("orientation");
 
-        if( degreesToTurnFinal >= 180 ){
+        if(degreesToTurnFinal >= 180){
             degreesToTurnFinal = 360 - degreesToTurnFinal;
         }
         else if( degreesToTurnFinal <= -180 ){
@@ -159,24 +160,13 @@ public class Drivetrain {
                 System.exit(0);
             }
         }
-
-
-        //// TODO: 10/30/2016 Finish moveDistanceMilli method
-
     }
 
     //Tells the robot how much left (positive value) or right (negative) to turn based on the initial heading, from 0
     //to 359.9, and the final heading, also from 0 to 360. Accounts for the jump from 359.9 to 0.
     public void turn( double destinationDegrees, double currentDegrees, IMU imu){
         this.setRunMode( RunMode.RUN_WITHOUT_ENCODER );
-        double difference = destinationDegrees - currentDegrees;
-        if( Math.abs( difference ) > 180) {
-            if (difference < 0) {
-                difference += 360;
-            } else {
-                difference -= 360;
-            }
-        }
+        double difference = turnValue(destinationDegrees, currentDegrees);
         double differenceAbs = Math.abs( difference );
         double dir = difference / differenceAbs;
 

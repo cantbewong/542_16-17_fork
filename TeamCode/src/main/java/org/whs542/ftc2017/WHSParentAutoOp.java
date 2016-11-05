@@ -22,6 +22,8 @@ public abstract class WHSParentAutoOp extends OpMode {
         whsRobot = new WHSRobot(hardwareMap);
     }
 
-    public abstract void loop();
+    public abstract void loop(
+
+    );
 
 }
