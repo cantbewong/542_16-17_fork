@@ -18,9 +18,15 @@ public class Flywheel {
     private Servo flywheelGate;
     //private Servo particleRelease;
 
+    private static double CIRCUMFERENCE = Math.PI * 11.43; //11.43 is diameter of wheel
+    private double TICKS_PER_SEC;
+    private static double TICKS_PER_REV = 1120;
+    private double METERS_PER_SEC = CIRCUMFERENCE*TICKS_PER_SEC/ TICKS_PER_REV;
+    private static double MAX_VELOCITY = 23.08397;
+
     private boolean status;
     private boolean gateStatus;
-    private static double MAX_SPEED = 4000; //ticks per sec
+    private final double MAX_SPEED = 4000; //ticks per sec
 
     private Coordinate currentPosition;
     private Coordinate Vortex = new Coordinate(304.8,304.8,304.8,1);
@@ -143,6 +149,14 @@ public class Flywheel {
                 else if (b1){loop = false;}
                 else if (joystick != 0 ){loop = false;}
             }
+        }
+    }
+
+    public void test(boolean b1, double velocity){
+        power = velocity/MAX_VELOCITY;
+        if (b1){
+            rightFly.setPower(power);
+            leftFly.setPower(-power);
         }
     }
 }
