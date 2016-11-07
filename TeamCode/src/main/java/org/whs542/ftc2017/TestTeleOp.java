@@ -27,7 +27,7 @@ public class TestTeleOp extends OpMode{
         robot.drivetrain.setRLPower(gamepad1.left_stick_y, gamepad1.right_stick_y);
         robot.intake.runIntake(gamepad1.left_bumper, gamepad1.left_trigger, 1.0);
         robot.flywheel.run(gamepad1.right_bumper, 0.5);
-        robot.flywheel.operateGate(gamepad1.a);
+        robot.flywheel.operateGate(gamepad1.right_trigger);
 
         //Telemetry
         telemetry.addData("LeftStick Y:", gamepad1.left_stick_y);
