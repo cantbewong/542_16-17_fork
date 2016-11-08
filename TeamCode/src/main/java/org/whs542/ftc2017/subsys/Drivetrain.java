@@ -1,12 +1,12 @@
 package org.whs542.ftc2017.subsys;
 
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.*;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whs542.lib.Coordinate;
+import org.whs542.lib.Toggler;
 import org.whs542.lib.Vuforia;
 import org.whs542.lib.IMU;
 
@@ -15,25 +15,28 @@ import org.whs542.lib.IMU;
  */
 public class Drivetrain {
 
-    DcMotor frontLeft;
-    DcMotor frontRight;
-    DcMotor backLeft;
-    DcMotor backRight;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor backLeft;
+    private DcMotor backRight;
+
+    private Toggler orientationSwitch = new Toggler(2);
 
     //All measurements in millimeters because that is the unit Vuforia uses
     private final double RADIUS_OF_WHEEL = 50;
     private final double CIRC_OF_WHEEL = RADIUS_OF_WHEEL * 2 * Math.PI;
     private final double ENCODER_TICKS_PER_MM = 1120 / CIRC_OF_WHEEL;
+    private static final double JOY_THRESHOLD = 0.2;
 
     private final double MIN_POWER_VALUE = 0.15;
 
 
-    public Drivetrain (HardwareMap driveMap){
-
-        frontRight = driveMap.dcMotor.get("frontRight");
-        frontLeft = driveMap.dcMotor.get("frontLeft");
-        backRight = driveMap.dcMotor.get("backRight");
-        backLeft = driveMap.dcMotor.get("backLeft");
+    public Drivetrain (HardwareMap driveMap)
+    {
+        frontRight = driveMap.dcMotor.get("drive_fr");
+        frontLeft = driveMap.dcMotor.get("drive_fl");
+        backRight = driveMap.dcMotor.get("drive_br");
+        backLeft = driveMap.dcMotor.get("drive_bl");
 
         frontRight.setZeroPowerBehavior( ZeroPowerBehavior.BRAKE );
         frontLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
@@ -42,60 +45,99 @@ public class Drivetrain {
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
     }
 
-    public void setRunMode( RunMode theMode ){
+    public void setRunMode( RunMode theMode )
+    {
         frontLeft.setMode(theMode);
         frontRight.setMode(theMode);
         backLeft.setMode(theMode);
         backRight.setMode(theMode);
     }
 
-    public void setMaxSpeed(int maxSpeed){
-        frontLeft.setMaxSpeed( maxSpeed );
-        frontRight.setMaxSpeed( maxSpeed );
+    public void setMaxSpeed(int maxSpeed)
+    {
+        frontLeft.setMaxSpeed(maxSpeed);
+        frontRight.setMaxSpeed(maxSpeed);
         backLeft.setMaxSpeed(maxSpeed);
         backRight.setMaxSpeed(maxSpeed);
     }
 
-    public void setRightPower(double power){
+    //Set power methods
+    public void setRightPower(double power)
+    {
         frontRight.setPower(power);
         backRight.setPower(power);
     }
 
-    public void setLeftPower(double power){
+    public void setLeftPower(double power)
+    {
         frontLeft.setPower(power);
         backLeft.setPower(power);
     }
 
-    public void setRLPower(double leftPower, double rightPower){
-        frontLeft.setPower(-leftPower);
-        backLeft.setPower(-leftPower);
-        frontRight.setPower(-rightPower);
-        backRight.setPower(-rightPower);
-
+    public void setLRPower(double leftPower, double rightPower)
+    {
+        switch(orientationSwitch.currentState())
+        {
+            case 0:
+                setRightPower(rightPower);
+                setLeftPower(leftPower);
+                break;
+            case 1:
+                setRightPower(-rightPower);
+                setLeftPower(-leftPower);
+                break;
+        }
     }
 
-    //add orientation switcher
+    //A set power method using the cubic function
+    public void setLRScaledPower(double leftPower, double rightPower)
+    {
+        double rightScaledPower = Math.abs(rightPower) > JOY_THRESHOLD ? Math.pow(rightPower,3) : 0.0;
+        double leftScaledPower = Math.abs(leftPower) > JOY_THRESHOLD ? Math.pow(leftPower,3) : 0.0;
 
-    //A set power method using the cubic function that Moses made
-    //params left and right can just be joystick values
-    public void setRLScaledPower(double leftPower, double rightPower){
+        switch(orientationSwitch.currentState())
+        {
+            case 0:
+                setRightPower(rightScaledPower);
+                setLeftPower(leftScaledPower);
+                break;
+            case 1:
+                setRightPower(-rightScaledPower);
+                setLeftPower(-leftScaledPower);
+                break;
+        }
+    }
 
-        double rightScaledPower = -Math.pow(rightPower, 3);
-        double leftScaledPower = -Math.pow(leftPower, 3);
+    //Orientation Switch Methods
+    public void setOrientation(boolean trigger)
+    {
+        orientationSwitch.changeState(trigger);
+    }
 
-        setRightPower(rightScaledPower);
-        setLeftPower(leftScaledPower);
+    public String getOrientation()
+    {
+        String orientation = "null";
+        switch(orientationSwitch.currentState())
+        {
+            case 0:
+                orientation = "Normal";
+                break;
+            case 1:
+                orientation = "Reverse";
+                break;
+        }
+        return orientation;
     }
 
     //Runs all four motors to a certain encoder position; holds all motors actively thereat
-    public void setTargetPosition( int position ){
-        frontLeft.setTargetPosition( position );
-        frontRight.setTargetPosition( position );
-        backLeft.setTargetPosition( position );
-        backRight.setTargetPosition( position );
+    public void setTargetPosition(int position)
+    {
+        frontLeft.setTargetPosition(position);
+        frontRight.setTargetPosition(position);
+        backLeft.setTargetPosition(position);
+        backRight.setTargetPosition(position);
     }
 
     //Input: destination coordinate object(values are in millimeters)
@@ -155,11 +197,11 @@ public class Drivetrain {
         while( Math.abs( 0.5 * ( frontRight.getCurrentPosition() + backLeft.getCurrentPosition() ) )
             < Math.abs( encoderPosition )) {
 
-            this.setRLPower(0.5, 0.5);
+            this.setLRPower(0.5, 0.5);
             //If the acceleration measured by the accelerometer exceeds a certain threshold, indicating
             //that the robot slammed into something, stop the robot.
             if( imu.getAccelerationMag() > 10.0 ){
-                this.setRLPower(0, 0);
+                this.setLRPower(0, 0);
                 System.exit(0);
             }
         }
@@ -184,7 +226,7 @@ public class Drivetrain {
         while( turning ){
             //Don't worry about this line. It basically scales down the motor power so when the robot finishes
             //Turning it should be barely moving and not stop abruptly.
-            this.setRLPower( -( 1 - MIN_POWER_VALUE ) * amtToTurn / differenceAbs - dir * MIN_POWER_VALUE,
+            this.setLRPower( -( 1 - MIN_POWER_VALUE ) * amtToTurn / differenceAbs - dir * MIN_POWER_VALUE,
             ( 1 - MIN_POWER_VALUE ) * amtToTurn / differenceAbs + dir * MIN_POWER_VALUE);
 
             heading = imu.getHeading();

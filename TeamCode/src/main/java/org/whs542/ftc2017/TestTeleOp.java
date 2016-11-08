@@ -24,7 +24,8 @@ public class TestTeleOp extends OpMode{
 
     @Override
     public void loop() {
-        robot.drivetrain.setRLPower(gamepad1.left_stick_y, gamepad1.right_stick_y);
+        robot.drivetrain.setLRScaledPower(gamepad1.left_stick_y, gamepad1.right_stick_y);
+        robot.drivetrain.setOrientation(gamepad1.a);
         robot.intake.runIntake(gamepad1.left_bumper, gamepad1.left_trigger, 1.0);
         robot.flywheel.run(gamepad1.right_bumper, 0.5);
         robot.flywheel.operateGate(gamepad1.right_trigger);
@@ -32,6 +33,7 @@ public class TestTeleOp extends OpMode{
         //Telemetry
         telemetry.addData("LeftStick Y:", gamepad1.left_stick_y);
         telemetry.addData("RightStick Y:", gamepad1.right_stick_y);
+        telemetry.addData("Orientation:", robot.drivetrain.getOrientation());
 
         telemetry.addData("Trigger:", gamepad1.left_trigger);
 
