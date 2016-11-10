@@ -43,6 +43,8 @@ public class Flywheel {
         status = false;
         rightFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rightFly.setMaxSpeed(4000);
+        //leftFly.setMaxSpeed(4000);
         //particleRelease = aMap.servo.get("particleRelease");
     }
 
@@ -97,9 +99,23 @@ public class Flywheel {
     /*public void operateGate(float trigger)
     {
         boolean triggerPressed;
-        if(trigger no)
+        if(trigger != 0) {triggerPressed = true;}
+        else {triggerPressed = false;}
+    }
 
+        gateToggler.changeState(triggerPressed);
+        if(gateToggler.currentState() == 1)
+        {
+            gateStatus = true;
+            flywheelGate.setPosition(1.0);
+        }
+        else
+        {
+            gateStatus = false;
+            flywheelGate.setPosition(0.0);
+        }
     }*/
+
 
     public String getFlywheelStatus()
     {
