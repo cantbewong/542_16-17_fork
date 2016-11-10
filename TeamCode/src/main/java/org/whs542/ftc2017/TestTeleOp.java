@@ -37,5 +37,14 @@ public class TestTeleOp extends OpMode{
 
         telemetry.addData("FWheelStat:", robot.flywheel.getFlywheelStatus());
         telemetry.addData("FGateStat:", robot.flywheel.getGateStatus());
+
+        //test for flywheel velocity vs distance
+        /*robot.flywheel.test(gamepad1.a, 1);
+        robot.flywheel.test(gamepad1.a, 0.9);
+        robot.flywheel.test(gamepad1.a, 0.8);
+        robot.flywheel.test(gamepad1.a, 0.7);
+        robot.flywheel.test(gamepad1.a, 0.6);
+
+        telemetry.addData("Velocity", robot.flywheel.getCurrentVelocity());*/
     }
 }

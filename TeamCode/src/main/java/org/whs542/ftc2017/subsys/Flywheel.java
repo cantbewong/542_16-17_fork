@@ -94,12 +94,12 @@ public class Flywheel {
         }
     }
 
-    public void operateGate(float trigger)
+    /*public void operateGate(float trigger)
     {
         boolean triggerPressed;
         if(trigger no)
 
-    }
+    }*/
 
     public String getFlywheelStatus()
     {
@@ -154,9 +154,22 @@ public class Flywheel {
 
     public void test(boolean b1, double velocity){
         power = velocity/MAX_VELOCITY;
-        if (b1){
+        flyToggler.changeState(b1);
+        if(flyToggler.currentState() == 1)
+        {
+            status = true;
             rightFly.setPower(power);
             leftFly.setPower(-power);
         }
+        else
+        {
+            status = false;
+            rightFly.setPower(0);
+            leftFly.setPower(0);
+        }
+    }
+
+    public double getCurrentVelocity(){
+        return (rightFly.getPower()*MAX_VELOCITY);
     }
 }
