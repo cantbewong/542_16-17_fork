@@ -33,6 +33,7 @@ public class Vuforia {
     VuforiaLocalizer vuforia;
 
     List<VuforiaTrackable> allTrackables;
+    VuforiaTrackables ftcTargets;
 
     float mmPerInch        = 25.4f;
     float mmBotWidth       = 18 * mmPerInch;            // ... or whatever is right for your robot
@@ -50,7 +51,7 @@ public class Vuforia {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-        VuforiaTrackables ftcTargets = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
+        ftcTargets = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
         VuforiaTrackable wheels = ftcTargets.get(0);
         wheels.setName("Wheels");
 
@@ -110,8 +111,6 @@ public class Vuforia {
         ((VuforiaTrackableDefaultListener)gears.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         ((VuforiaTrackableDefaultListener)tools.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         ((VuforiaTrackableDefaultListener)legos.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
-        ftcTargets.activate();
-
     }
 
     /**
@@ -121,6 +120,7 @@ public class Vuforia {
      * The first, second, and third values in the xyzCoords [] correspond to x, y, and z coordinates, respectively.
      */
     public Coordinate getHeadingAndLocation(){
+        ftcTargets.activate();
 
         float[] xyzCoords = {10000, 10000, 10000};
 
@@ -142,7 +142,7 @@ public class Vuforia {
             }
             else {}
         }
-
+        ftcTargets.deactivate();
         return new Coordinate(xyzCoords[0], xyzCoords[1], xyzCoords[2], vuforiaAngleConverter(heading));
     }
 
