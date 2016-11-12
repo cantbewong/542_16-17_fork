@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whs542.lib.Coordinate;
+import org.whs542.lib.Functions;
 import org.whs542.lib.Toggler;
 import org.whs542.lib.Vuforia;
 import org.whs542.lib.IMU;
@@ -142,62 +143,93 @@ public class Drivetrain {
 
     //Input: destination coordinate object(values are in millimeters)
     //Output: robot automatically moves to that point on the field.
-    public void move( Coordinate destination, Vuforia vuforia, IMU imu){
+    public void move(Coordinate target, Vuforia vuforia, IMU imu){
         Coordinate current = vuforia.getHeadingAndLocation();
 
-        double distanceSquared =
-                Math.pow( destination.returnCoordSingleValue("x") - current.returnCoordSingleValue("x"), 2 ) +
-                        Math.pow( destination.returnCoordSingleValue("y") - current.returnCoordSingleValue("y"), 2);
-
-        double distance = Math.sqrt(distanceSquared);
-
-        /**Problem: turn in the direction of the shorter angle. E.g. if degreesToTurn is 270, which
-         * is a 270 degree turn counterclockwise, we want degreesToTurn to be -90, which is a
-         * 90 degree turn clockwise.
-         */
-        /*double degreesToTurnFinal = destination.returnCoordSingleValue("orientation") - current.returnCoordSingleValue("orientation");
-
-        if(degreesToTurnFinal >= 180){
-            degreesToTurnFinal = 360 - degreesToTurnFinal;
-        }
-        else if( degreesToTurnFinal <= -180 ){
-            degreesToTurnFinal = degreesToTurnFinal + 360;
-        }*/
+        double distance = Functions.calculateDistance(current, target);
 
         //Distance to go in x and y units (mm) which can be positive or negative, from current to destination position
-        double xPosToGo = destination.returnCoordSingleValue("x") - current.returnCoordSingleValue("x");
-        double yPosToGo = destination.returnCoordSingleValue("y") - current.returnCoordSingleValue("y");
+        double xPosToGo = target.returnCoordSingleValue("x") - current.returnCoordSingleValue("x");
+        double yPosToGo = target.returnCoordSingleValue("y") - current.returnCoordSingleValue("y");
+
         //InitialOrientation is the initial heading that the robot aligns to before moving forward
-        double initialOrientation;
+        double movingOrientation = 180 * Math.atan2( yPosToGo, xPosToGo ) / Math.PI;
 
-        initialOrientation = 180 * Math.atan2( yPosToGo, xPosToGo ) / Math.PI;
-
-        if( initialOrientation < 0 ){
-            initialOrientation = 360 + initialOrientation;
+        if( movingOrientation < 0 )
+        {
+            movingOrientation += 360;
         }
+
         //Turn robot to the desired orientation
-        this.turn(initialOrientation, current.returnCoordSingleValue("heading"), imu);
+        this.turn(movingOrientation, current.returnCoordSingleValue("heading"), imu);
 
         //Move robot forward the calculated distance, using IMU as check
         this.moveDistanceMilli(distance, imu);
 
         //Orient robot to destination orientation
-        this.turn(destination.returnCoordSingleValue("heading"), initialOrientation, imu);
+        this.turn(target.returnCoordSingleValue("heading"), movingOrientation, imu);
 
     }
 
     //Moves a certain distance forwards or backwards using encoders. Includes IMU as check. Negative = backwards.
     public void moveDistanceMilli(double distanceMM, IMU imu){
+
         int encoderPosition = (int) (24 / 24.5 * 0.5 * distanceMM * ENCODER_TICKS_PER_MM);
 
         this.setRunMode( RunMode.STOP_AND_RESET_ENCODER );
         this.setRunMode( RunMode.RUN_TO_POSITION );
         this.setMaxSpeed(4000);
         this.setTargetPosition(encoderPosition);
+
         while( Math.abs( 0.5 * ( frontRight.getCurrentPosition() + backLeft.getCurrentPosition() ) )
             < Math.abs( encoderPosition )) {
 
-            this.setLRPower(0.1, 0.1);
+            this.setLRPower(0.3, 0.3);
+
+            //If the acceleration measured by the accelerometer exceeds a certain threshold, indicating
+            //that the robot slammed into something, stop the robot.
+            if( imu.getAccelerationMag() > 10.0 ){
+                this.setLRPower(0, 0);
+                System.exit(0);
+            }
+        }
+    }
+
+    public void moveDistanceMilli2(double distanceMM, IMU imu)
+    {
+        int targetPosition =   (int) (24 / 24.5 * 0.5 * distanceMM * ENCODER_TICKS_PER_MM);
+
+        this.setRunMode( RunMode.STOP_AND_RESET_ENCODER );
+        this.setRunMode(RunMode.RUN_TO_POSITION);
+        this.setMaxSpeed(4000);
+        this.setTargetPosition(targetPosition);
+        int stage = 0;
+        while( Math.abs(getEncoderPosition()) < Math.abs(targetPosition))
+        {
+            switch(stage)
+            {
+                case 0:
+                    while(Math.abs(getEncoderPosition()) < Math.abs(targetPosition) * 0.5)
+                    {
+                        this.setLRPower(0.5, 0.5);
+                    }
+                    stage = 1;
+                    break;
+                case 1:
+                    while(Math.abs(getEncoderPosition()) < Math.abs(targetPosition) * 0.75)
+                    {
+                        this.setLRPower(0.3, 0.3);
+                    }
+                    stage = 2;
+                    break;
+                case 2:
+                    while(Math.abs(getEncoderPosition()) < Math.abs(targetPosition))
+                    {
+                        this.setLRPower(0.1, 0.1);
+                    }
+                    break;
+            }
+
             //If the acceleration measured by the accelerometer exceeds a certain threshold, indicating
             //that the robot slammed into something, stop the robot.
             if( imu.getAccelerationMag() > 10.0 ){
@@ -238,7 +270,7 @@ public class Drivetrain {
         }
     }
 
-    public double turnValue( double destinationDegrees, double currentDegrees){
+    public double turnValue(double destinationDegrees, double currentDegrees){
         double difference = destinationDegrees - currentDegrees;
         if( Math.abs( difference ) > 180){
             if( difference < 0){
@@ -251,5 +283,11 @@ public class Drivetrain {
         return difference;
     }
 
+    public double getEncoderPosition()
+    {
+        double position = frontRight.getCurrentPosition() + frontLeft.getCurrentPosition() +
+                            backRight.getCurrentPosition() + backLeft.getCurrentPosition();
+        return position * 0.25;
+    }
 }
 
