@@ -2,6 +2,7 @@ package org.whs542.ftc2017;
 
 import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.whs542.ftc2017.subsys.WHSRobot;
 import org.whs542.lib.IMU;
@@ -12,7 +13,7 @@ import org.whs542.lib.Vuforia;
  */
 
 @Autonomous( name = "MoveTestAutoOp", group = "test" )
-public class MoveTestAutoOp extends WHSParentAutoOp{
+public class MoveTestAutoOp extends LinearOpMode{
 
     Vuforia vuforia;
     IMU imu;
@@ -20,9 +21,8 @@ public class MoveTestAutoOp extends WHSParentAutoOp{
 
     int caseNumber;
     @Override
-    public void init()
+    public void runOpMode()
     {
-        //super.init();
         vuforia = new Vuforia();
         DbgLog.msg("Vuforia init");
         telemetry.addData("Vuforia Init", 1);
@@ -33,14 +33,18 @@ public class MoveTestAutoOp extends WHSParentAutoOp{
         DbgLog.msg("Rbt init");
         telemetry.addData("RBT Init", 1);
         caseNumber = 0;
+
+        waitForStart();
+        whsRobot.drivetrain.moveDistanceMilli(610, imu);
+
     }
 
-    @Override
+    /*@Override
     public void loop(){
         while (caseNumber == 0) {
-            whsRobot.drivetrain.moveDistanceMilli(1000, imu);
+
             caseNumber = 1;
         }
-    }
+    }*/
 
 }
