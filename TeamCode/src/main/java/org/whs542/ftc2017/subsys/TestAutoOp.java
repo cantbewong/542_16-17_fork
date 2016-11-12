@@ -23,7 +23,6 @@ public class TestAutoOp extends OpMode{
 
     public void loop() {
 
-
     }
 }
 
